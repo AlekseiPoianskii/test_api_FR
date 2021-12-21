@@ -80,7 +80,7 @@ def create_answer(request):
     return Response(answer)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def view_survey(request):
     surveys = Survey.objects.filter(date_to_start__gte=now()).exclude(date_to_finish__lte=now())
     return Response(surveys)
