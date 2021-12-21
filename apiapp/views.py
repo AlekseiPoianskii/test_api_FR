@@ -250,6 +250,43 @@ def view_accessible_survey(request):
     return Response(surveys)
 
 
+@api_view(["POST"])
+def view_survey_solution(request):
+    """
+    {
+      "survey": {
+        "id": "1"
+      }
+    }
+    :param request: survey
+    :return: survey fields
+    """
+    answer_response = dict()
+    survey = Survey.objects.get(id=request.data['survey']['id'])
+    answer_response['survey'] = {
+        'id': survey.id,
+        'name_survey': survey.name_survey,
+        'date_to_start': survey.date_to_start,
+        'date_to_finish': survey.date_to_finish,
+        'description': survey.description
+    }
+    questions = list(Question.objects.filter(survey=survey))
+    for question in questions:
+        answer_response['questions'][f'{question.id}'] = {
+            'id': question.id,
+            'text_question': question.text_question,
+            'type_question': question.type_question
+        }
+        answers = list(AnswerQuestion.objects.filter(question=question))
+        for answer in answers:
+            answer_response['questions'][f'{question.id}']['answers'][f'{answer.id}'] = {
+                'id': answer.id,
+                'text_answer': answer.text_answer,
+                'is_true': answer.is_true
+            }
+    return Response(answer_response)
+
+
 @api_view(['POST'])
 def view_answer(request):
     """
