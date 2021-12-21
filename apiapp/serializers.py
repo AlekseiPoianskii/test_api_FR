@@ -100,7 +100,6 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         if validated_data["user"] == "Anonymous":
-
             user = User.objects.create(first_name="anonymous", username=f'{now().minute+now().microsecond}')
         else:
             user = User.objects.get(**validated_data['user'])
